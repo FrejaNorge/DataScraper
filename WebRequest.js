@@ -1,10 +1,9 @@
 /* 
     WebRequest()
-    takes the parameters "hostName, portNumber and path"
+    takes the parameters "hostName and path"
     returns the specified webpages HTML code in log
-                                                    */
-
-function WebRequest(hostName,portNumber,path) {
+*/
+function WebRequest(hostName,path) {
 
     let https = require("https"),
         util = require("util");
@@ -13,7 +12,7 @@ function WebRequest(hostName,portNumber,path) {
                     headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246' },   // Browser header                   
                     host: hostName,
                     path: path,
-                    port: portNumber        // http = 80, https = 443, ftp = 21                    
+                    port: 443        // http = 80, https = 443, ftp = 21                    
     };
 
     let body = '';
@@ -33,4 +32,4 @@ function WebRequest(hostName,portNumber,path) {
     request.end();
 }
 
-WebRequest('www.amazon.de',443,'/gp/bestsellers/?ref_=nav_cs_bestsellers');
+WebRequest('www.facebook.com','/events');
