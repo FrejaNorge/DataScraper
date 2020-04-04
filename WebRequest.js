@@ -32,4 +32,4 @@ function WebRequest(hostName,path) {
     request.end();
 }
 
-WebRequest('www.facebook.com','/events');
+// WebRequest('www.facebook.com','/events');
