@@ -1,5 +1,5 @@
 /* 
-    WebRequest()
+    WebRequest(hostName,path)
     takes the parameters "hostName and path"
     returns the specified webpages HTML code in log
 */
@@ -32,4 +32,5 @@ function WebRequest(hostName,path) {
     request.end();
 }
 
+module.exports = WebRequest;
 // WebRequest('www.facebook.com','/events');
