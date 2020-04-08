@@ -12,7 +12,7 @@ function WebRequest(hostName,path) {
                     headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246' },   // Browser header                   
                     host: hostName,
                     path: path,
-                    port: 443        // http = 80, https = 443, ftp = 21                    
+                    port: 443        // http = 80, https = 443, ftp = 21
     };
 
     let body = '';
@@ -33,4 +33,3 @@ function WebRequest(hostName,path) {
 }
 
 module.exports = WebRequest;
-// WebRequest('www.facebook.com','/events');
