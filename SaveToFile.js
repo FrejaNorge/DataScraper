@@ -1,6 +1,5 @@
 const fs = require('fs');
 
-/*Opl*/
 var jsonData = /*data*/;
 
 var jsonObj = JSON.parse(jsonData);
