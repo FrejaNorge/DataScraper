@@ -1,10 +1,11 @@
 /* 
     WebRequest(hostName,path)
     takes the parameters header, hostName and path"
-    returns the specified webpages HTML code in log
+    returns the specified webpages HTML code as .txt
 */
 
 const billetlugenHeader = require('./headers.js');
+const write = require('./writeRaw.js');
 
 function WebRequest(header,hostName,path) {
 
@@ -27,8 +28,8 @@ function WebRequest(header,hostName,path) {
         });
 
         res.on("end", function () {
-            return console.log(body);
-        });
+            write('billetlugenHTML.txt',body);
+       });             
     });
 
     request.end();

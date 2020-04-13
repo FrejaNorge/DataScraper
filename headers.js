@@ -1,5 +1,7 @@
-/* Module that handles and exports
-   header variables */
+/* 
+    Module that handles and exports
+    header variables 
+*/
 
 
 module.exports = billetlugenHeader = {
