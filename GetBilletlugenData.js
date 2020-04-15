@@ -20,8 +20,15 @@ for (index = 0; index <= subURL.length; index++) {
 
     (function(index) {
 
-        setTimeout(function() {
-            request(billetlugenHeader,'www.billetlugen.dk',subURL[index]);
+        setTimeout(async function() {
+            try{
+                let result = await request.WebRequestSecure(billetlugenHeader,'www.billetlugen.dk',subURL[index]);
+                
+                console.log(result);
+            }catch(err){
+                console.log(err);
+            }
+
         }, 2000 * index);
 
     })(index);

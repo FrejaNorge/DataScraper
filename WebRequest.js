@@ -6,11 +6,42 @@
 
 const billetlugenHeader = require('./headers.js');
 const write = require('./writeRaw.js');
+let https = require("https");
+
+
+function WebRequestSecure(header,hostName,path){
+    let options = {
+        headers: header,
+        host: hostName,
+        path: path,
+        port: 443        // http = 80, https = 443, ftp = 21
+    };
+
+    let p = new Promise((resolve, reject) => {
+    
+    let req = https.request(options, function(res) {
+            let data = "";
+            res.setEncoding("utf8");
+
+            res.on("data", function (chunk) {
+                data += chunk;
+            });
+
+            res.on("end", ()=> {
+                resolve({ statuscode: res.statusCode, data: data});
+           });  
+
+           res.on('error', (err) => {
+               reject({statuscode: res.statusCode, data: err});
+           });
+        });
+        req.end();
+    });
+
+    return p;
+}
 
 function WebRequest(header,hostName,path) {
-
-    let https = require("https");
-    
     let options = {
         headers: header,
         host: hostName,
@@ -29,10 +60,14 @@ function WebRequest(header,hostName,path) {
 
         res.on("end", function () {
             write('billetlugenHTML.txt',body);
+            //console.log(body);
        });             
     });
 
     request.end();
 }
 
-module.exports = WebRequest;
+module.exports = {
+    WebRequest,
+    WebRequestSecure,
+}
