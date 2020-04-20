@@ -29,11 +29,11 @@ function WebRequestSecure(header,hostName,path){
 
             res.on("end", ()=> {
                 resolve({ statuscode: res.statusCode, data: data});
-           });  
+            });  
 
-           res.on('error', (err) => {
-               reject({statuscode: res.statusCode, data: err});
-           });
+            res.on('error', (err) => {
+                reject({statuscode: res.statusCode, data: err});
+            });
         });
         req.end();
     });
