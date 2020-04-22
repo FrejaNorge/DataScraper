@@ -1,5 +1,5 @@
 /* 
-    writeRaw(filenmae, string) writes the raw HTML 
+    writeRaw(filename, string) writes the raw HTML 
     to a .txt file takes the parameters filename and 
     string 
 */

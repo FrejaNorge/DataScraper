@@ -50,6 +50,7 @@ function WebRequest(header,hostName,path) {
     };
 
     let body = '';
+    let data = '';
     let request = https.request(options, function(res) {
 
         res.setEncoding("utf8");
@@ -59,8 +60,8 @@ function WebRequest(header,hostName,path) {
         });
 
         res.on("end", function () {
-            write('billetlugenHTML.txt',body);
-            //console.log(body);
+            //write('billetlugenHTML.txt',body);
+            return data += body;
        });             
     });
 
