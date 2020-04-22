@@ -20,6 +20,7 @@ async function getBilletlugenData() {
         '/billetter.html?affiliate=DKA&doc=category&fun=kategorieliste&detailadoc=erdetaila&detailbdoc=evdetailb&hkId=165&index=0&nextDays=30&nurbuchbar=true&showFilter=yes&sort_by=name&sort_direction=asc',  // Comedy
         '/billetter.html?affiliate=DKA&doc=category&fun=kategorieliste&detailadoc=erdetaila&detailbdoc=evdetailb&hkId=166&index=0&nextDays=30&nurbuchbar=true&showFilter=yes&sort_by=name&sort_direction=asc'   // Kultur
     ];
+    fs.writeFile("event.json", '', 'utf8', function(err) {});
 
     for (index = 0; index <= subURL.length; index++) {
 
@@ -28,8 +29,8 @@ async function getBilletlugenData() {
             setTimeout(async function() {
                 try {
                     result = await request.WebRequestSecure(billetlugenHeader, 'www.billetlugen.dk', subURL[index]);
-                                        
-                    fs.writeFile("DataScraper/event.json", result.data, 'utf8', function(err) {
+                    
+                    fs.appendFile("event.json", result.data, 'utf8', function(err) {
                     });
                     //console.log(result.data); // Debug
                 } catch(err) {
@@ -42,7 +43,7 @@ async function getBilletlugenData() {
     }
 }; 
 
-// getBilletlugenData();    // Debug
+getBilletlugenData();    // Debug
 
 module.exports = getBilletlugenData;
 
