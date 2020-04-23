@@ -2,17 +2,17 @@
 
 */
 const fs = require('fs');
-const billetlugenData = require('./getBilletlugenData.js');
-
+//const billetlugenData = require('./getBilletlugenData.js');
+/*
 async function runOrder() {
 
     billetlugenData();
     //facebookData();
-    /* lave en rækkefølge på kørsel og vente tid */
+
     getData();
 
 };
-
+*/
 
 
 async function getData(string) {
@@ -27,27 +27,35 @@ async function getData(string) {
         let stringOfHTML = JSON.stringify(jsonFile);
 
 
-/*        
+        
         let eventInfo = {"link": '', "name": '', "location": '', "place": '', "date": '', "time": '', "price": ''},
             eventList = [];
 
-        let newEventSearch = '<h4>', //let for searchs words
+        let falseEventSearch = '<h4>Spec',
+            newEventSearch = '<h4>', //let for searchs words
             eventLinkSearch = '<a href="',
-            linkEndSearch = '" title=',
+            linkEndSearch = '"',
             eventNameSearch = 'title="',
             nameEndSearch = 'name="',
-            eventLocationSearch = 'class="place"',
+            eventPlaceAndLocationSearch = 'class="place"',
             placeStartSearch = '<dt>',
             placeEndSearch = '</dt>',
             locationStartSearch = '<span>',
             locationEndSearch = '</span>',
             eventDateSearch = '<div>',
-            timeEndSearch = '</div>',
+            dateEndSearch = '</div>',
             eventPriceSearch = 'class="price"',
             priceStartSearch = 'DKK',
             priceEndSearch = ',';
 
-        let stfu = 'stfu'; //let for lenghts
+        let falseEventLength = falseEventSearch.length,
+            linkStartLength = eventLinkSearch.length,
+            nameStartLength = eventNameSearch.length,
+            placeStartLength = placeStartSearch.length,
+            locationStartLength = locationStartSearch.length,
+            eventDateLength = eventDateSearch.length,
+            priceStartLength = priceStartSearch.length,
+            priceCustomLenght = 3;
 
         let existingEventIndex = 0, //let for index places
             lastEventIndex = 0,
@@ -55,32 +63,60 @@ async function getData(string) {
             linkEndIndex = 0,
             nameStartIndex = 0,
             nameEndIndex = 0,
+            placeAndLocationStartIndex = 0,
             placeStartIndex = 0,
             placeEndIndex = 0,
             locationStartIndex = 0,
             locationEndIndex = 0,
             dateStartIndex = 0,
             dateEndIndex = 0,
+            priceIndex = 0,
             priceStartIndex = 0,
             priceEndIndex = 0;
 
 
-        existingEventIndex = stringOfHTML.indexOf(newEventSearch, lastEventIndex);
+        skipindex = jsonFile.indexOf(falseEventSearch, lastEventIndex) + falseEventLength;
+        
+        existingEventIndex = jsonFile.indexOf(newEventSearch, skipindex);
+        lastEventIndex = existingEventIndex;
         console.log(existingEventIndex);
-        //console.log(stringOfHTML);
 
-        while (existingEventIndex !== -1) {
+        while ((existingEventIndex !== -1) && (lastEventIndex !== -1)) {
 
-            linkstartIndex = result.indexOf(eventLinkSearch, existingEventIndex);
-            linkEndIndex = result.indexOf(linkEndSearch, linkstartIndex);
-
-            eventInfo.link = result.substr((linkstartIndex + eventLinkSearch.lenght), (linkEndIndex - (linkstartIndex - eventLinkSearch.lenght)));
+            //link
+            linkstartIndex = jsonFile.indexOf(eventLinkSearch, lastEventIndex);
+            linkEndIndex = jsonFile.indexOf(linkEndSearch, linkstartIndex + linkStartLength);
             console.log(linkstartIndex);
             console.log(linkEndIndex);
-            console.log(eventInfo.link);
 
+            //name
+            nameStartIndex = jsonFile.indexOf(eventNameSearch, linkEndIndex);
+            nameEndIndex = jsonFile.indexOf(nameEndSearch, nameStartIndex);
+
+            //place and location
+            placeAndLocationStartIndex = jsonFile.indexOf(eventPlaceAndLocationSearch, nameEndIndex);
+            //place
+            placeStartIndex = jsonFile.indexOf(placeStartSearch, nameEndIndex);
+            placeEndIndex = jsonFile.indexOf(placeEndSearch, placeStartIndex);
+
+            //location
+            locationStartIndex = jsonFile.indexOf(locationStartSearch, placeEndIndex);
+            locationEndIndex = jsonFile.indexOf(locationEndSearch, locationStartIndex);
+
+            //date
+            dateStartIndex = jsonFile.indexOf(eventDateSearch, locationEndIndex);
+            dateEndIndex = jsonFile.indexOf(dateEndSearch, dateStartIndex);
+
+            //price
+            priceIndex = jsonFile.indexOf(eventPriceSearch, dateEndIndex);
+            priceStartIndex = jsonFile.indexOf(priceStartSearch, priceIndex);
+            priceEndIndex = jsonFile.indexOf(priceEndSearch, priceStartIndex);
+
+            lastEventIndex = priceEndIndex;
+
+            existingEventIndex = jsonFile.indexOf(newEventSearch, lastEventIndex);
         }
-*/       
+       
     })
 };
 
