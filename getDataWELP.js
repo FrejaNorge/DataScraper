@@ -4,6 +4,7 @@
 
 const fs = require('fs');
 const request = require('./getBilletlugenDataWELP.js');
+const eventInfo = require('./eventPrototype.js');
 
 
 const getData = async () => {
@@ -12,8 +13,7 @@ const getData = async () => {
     
     //console.log(stringHTML);    // Skal vente på at getBilletlugenData har kørt sådan at jeg kan tilgå en streng med alt HTML data. (Den venter ikke på getBilletlugenData)
 
-    let eventInfo = {"link": '', "name": '', "location": '', "place": '', "date": '', "time": '', "price": '', "description": ''},
-        eventList = [];
+    let eventList = [];
 
     let falseEventSearch = '<h4>Spec', //let for searchs words
         newEventSearch = '<h4>',
@@ -21,9 +21,9 @@ const getData = async () => {
         linkEndSearch = '"',
         eventNameSearch = 'title="',
         nameEndSearch = 'name="',
-        eventPlaceAndLocationSearch = 'class="place"',
-        placeStartSearch = '<dt>',
-        placeEndSearch = '</dt>',
+        eventvenueAndLocationSearch = 'class="place"',
+        venueStartSearch = '<dt>',
+        venueEndSearch = '</dt>',
         locationStartSearch = '<span>',
         locationEndSearch = '</span>',
         eventDateSearch = '<div>',
@@ -35,21 +35,21 @@ const getData = async () => {
     let falseEventLength = falseEventSearch.length, //let for search words length
         linkStartLength = eventLinkSearch.length,
         nameStartLength = eventNameSearch.length,
-        placeStartLength = placeStartSearch.length,
+        venueStartLength = venueStartSearch.length,
         locationStartLength = locationStartSearch.length,
         eventDateLength = eventDateSearch.length,
         priceStartLength = priceStartSearch.length,
         priceCustomLenght = 3;
 
-    let existingEventIndex = 0, //let for index places
+    let existingEventIndex = 0, //let for index venues
         lastEventIndex = 0,
         linkstartIndex = 0,
         linkEndIndex = 0,
         nameStartIndex = 0,
         nameEndIndex = 0,
-        placeAndLocationStartIndex = 0,
-        placeStartIndex = 0,
-        placeEndIndex = 0,
+        venueAndLocationStartIndex = 0,
+        venueStartIndex = 0,
+        venueEndIndex = 0,
         locationStartIndex = 0,
         locationEndIndex = 0,
         dateStartIndex = 0,
@@ -69,29 +69,31 @@ const getData = async () => {
         
             existingEventIndex = stringHTML[i].indexOf(newEventSearch, skipindex);
             lastEventIndex = existingEventIndex;
-            console.log('eventTest', existingEventIndex);
+            //console.log('eventTest', existingEventIndex);
 
             while ((existingEventIndex !== -1) && (lastEventIndex !== -1)) {
+                eventList[eventCounter] = new eventInfo();
                 //link
-                linkstartIndex = stringHTML[i].indexOf(eventLinkSearch, lastEventIndex) + linkStartLength;
+                linkstartIndex = stringHTML[i].indexOf(eventLinkSearch, existingEventIndex) + linkStartLength;
                 linkEndIndex = stringHTML[i].indexOf(linkEndSearch, linkstartIndex + linkStartLength);
-                console.log('link start:', linkstartIndex);
-                console.log('link end:', linkEndIndex);
-                eventList[eventCounter] = stringHTML[i].substr(linkstartIndex, linkEndIndex - linkstartIndex);
-                //console.log(eventList[eventCounter]);
+                //console.log('link start:', linkstartIndex);
+                //console.log('link end:', linkEndIndex);
+                eventList[eventCounter].link = stringHTML[i].substr(linkstartIndex, linkEndIndex - linkstartIndex);
+                //console.log(eventCounter);
+                //console.log(eventList[eventCounter].link);
 
                 //name
                 nameStartIndex = stringHTML[i].indexOf(eventNameSearch, linkEndIndex);
                 nameEndIndex = stringHTML[i].indexOf(nameEndSearch, nameStartIndex);
 
-                //place and location
-                placeAndLocationStartIndex = stringHTML[i].indexOf(eventPlaceAndLocationSearch, nameEndIndex);
-                //place
-                placeStartIndex = stringHTML[i].indexOf(placeStartSearch, nameEndIndex);
-                placeEndIndex = stringHTML[i].indexOf(placeEndSearch, placeStartIndex);
+                //venue and location
+                venueAndLocationStartIndex = stringHTML[i].indexOf(eventvenueAndLocationSearch, nameEndIndex);
+                //venue
+                venueStartIndex = stringHTML[i].indexOf(venueStartSearch, nameEndIndex);
+                venueEndIndex = stringHTML[i].indexOf(venueEndSearch, venueStartIndex);
 
                 //location
-                locationStartIndex = stringHTML[i].indexOf(locationStartSearch, placeEndIndex);
+                locationStartIndex = stringHTML[i].indexOf(locationStartSearch, venueEndIndex);
                 locationEndIndex = stringHTML[i].indexOf(locationEndSearch, locationStartIndex);
 
                 //date
@@ -112,6 +114,10 @@ const getData = async () => {
         }
     }
     console.log(eventCounter);
+
+    for(let j = 0; j < eventCounter; j++) {
+        eventList[j].link
+    }
 };
 
 getData();
