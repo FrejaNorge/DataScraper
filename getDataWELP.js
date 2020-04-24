@@ -41,6 +41,8 @@ const getData = async () => {
         eventPriceSearch = 'class="price"',
         priceStartSearch = 'DKK',
         priceEndSearch = ',',
+        imageStartSearch = '<img src="/',
+        imageEndSearch = '"',
         extraString;
 
     let falseEventLength = falseEventSearch.length, //let for search words length
@@ -50,7 +52,8 @@ const getData = async () => {
         locationStartLength = locationStartSearch.length,
         eventDateLength = eventDateSearch.length,
         priceStartLength = priceStartSearch.length,
-        priceCustomLenght = 3;
+        priceCustomLenght = 3,
+        imageStartLength = imageStartSearch.length;
 
     let existingEventIndex = 0, //let for index venues
         lastEventIndex = 0,
@@ -68,12 +71,13 @@ const getData = async () => {
         priceIndex = 0,
         priceStartIndex = 0,
         priceEndIndex = 0,
+        imageStartIndex = 0,
+        imageEndIndex = 0,
         eventCounter = 0;
 
-    let timesToLoop = stringHTML.length;
     //console.log(stringHTML);
 
-    for(let i = 0; i < timesToLoop; i++) {
+    for(let i = 0; i < stringHTML.length; i++) {
 
         if(stringHTML[i] !== undefined) {
             skipindex = stringHTML[i].indexOf(falseEventSearch, lastEventIndex) + falseEventLength;
@@ -97,24 +101,40 @@ const getData = async () => {
                 nameStartIndex = stringHTML[i].indexOf(eventNameSearch, linkEndIndex);
                 nameEndIndex = stringHTML[i].indexOf(nameEndSearch, nameStartIndex);
 
+                eventList[eventCounter].name = stringHTML[i].substr();
+
                 //venue and location
                 venueAndLocationStartIndex = stringHTML[i].indexOf(eventvenueAndLocationSearch, nameEndIndex);
                 //venue
                 venueStartIndex = stringHTML[i].indexOf(venueStartSearch, nameEndIndex);
                 venueEndIndex = stringHTML[i].indexOf(venueEndSearch, venueStartIndex);
 
+                eventList[eventCounter].venue = stringHTML[i].substr();
+
                 //location
                 locationStartIndex = stringHTML[i].indexOf(locationStartSearch, venueEndIndex);
                 locationEndIndex = stringHTML[i].indexOf(locationEndSearch, locationStartIndex);
+
+                eventList[eventCounter].location = stringHTML[i].substr();
 
                 //date
                 dateStartIndex = stringHTML[i].indexOf(eventDateSearch, locationEndIndex);
                 dateEndIndex = stringHTML[i].indexOf(dateEndSearch, dateStartIndex);
 
+                eventList[eventCounter].date = stringHTML[i].substr();
+
                 //price
                 priceIndex = stringHTML[i].indexOf(eventPriceSearch, dateEndIndex);
                 priceStartIndex = stringHTML[i].indexOf(priceStartSearch, priceIndex);
                 priceEndIndex = stringHTML[i].indexOf(priceEndSearch, priceStartIndex);
+
+                eventList[eventCounter].price = stringHTML[i].substr();
+
+                //image link
+                imageStartIndex = stringHTML[i].indexOf(imageStartSearch, priceEndIndex);
+                imageEndIndex = stringHTML[i].indexOf(imageEndSearch, imageStartIndex + imageStartLength);
+
+                eventList[eventCounter].imageLink = stringHTML[i].substr();
 
                 //end properties
                 lastEventIndex = priceEndIndex;
@@ -124,16 +144,36 @@ const getData = async () => {
             lastEventIndex = 0;
         }
     }
+
     console.log(eventCounter);
 
-    for(let j = 0; j < eventCounter; j++) {
+    for(i = 0; i < eventCounter; i++) {
         extraString = '/';
-        eventLinks[j] = extraString.concat(eventList[j].link);
-        //console.log(eventLinks[j]);
-    }
+        eventLinks[i] = extraString.concat(eventList[i].link);
 
+        eventLinks[i] = eventLinks[i].replace(/;/g, '&');
+        console.log(eventLinks[i]);
+    }
+/*
     let descriptionHTML = await request.getBilletlugenData(eventLinks);
-    console.log(descriptionHTML[0]);
+    //console.log(descriptionHTML[0]);
+
+    let descriptionStartSearch = '',
+        descriptionEndSearch = '';
+
+    let descriptionStartlength = descriptionStartSearch.length;
+
+    let descriptionStartIndex = 0,
+        descriptionEndIndex = 0;
+
+    for(i = 0; i < eventCounter; i++) {
+
+        if(descriptionHTML[i] !== undefined) {
+
+            //lav noget kode som kan finde beskrivelsen :)
+        }
+    }
+*/
 };
 
 getData();

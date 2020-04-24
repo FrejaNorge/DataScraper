@@ -2,7 +2,7 @@
     Event prototype
 */
 
-function Event(link, name, location, venue, date, time, price, description) {
+function EventInfo(link, name, location, venue, date, time, price, description, imageLink) {
   
     this.link = link;
     this.name = name;
@@ -12,6 +12,7 @@ function Event(link, name, location, venue, date, time, price, description) {
     this.time = time;
     this.price = price;
     this.description = description;
+    this.imageLink = imageLink;
 };
 
-module.exports = Event;
+module.exports = EventInfo;
