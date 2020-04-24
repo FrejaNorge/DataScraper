@@ -33,7 +33,7 @@ function getBilletlugenData() {
                     data.push(result.data);
                 }
 
-                if(index + 1 !== subURL.length){//skip last wait
+                if(index + 1 !== subURL.length){ //skip last wait
                     await delay(2000);
                     //console.log("waited");
                 }
