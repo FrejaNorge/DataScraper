@@ -9,11 +9,21 @@ const eventInfo = require('./eventPrototype.js');
 
 const getData = async () => {
 
-    let stringHTML = await request.getBilletlugenData();
+    let subURL = [
+        '/billetter.html?affiliate=DKA&doc=category&fun=kategorieliste&detailadoc=erdetaila&detailbdoc=evdetailb&hkId=140&index=0&nextDays=30&nurbuchbar=true&showFilter=yes&sort_by=name&sort_direction=asc',  // Musik
+        '/billetter.html?affiliate=DKA&doc=category&fun=kategorieliste&detailadoc=erdetaila&detailbdoc=evdetailb&hkId=141&index=0&nextDays=30&nurbuchbar=true&showFilter=yes&sort_by=name&sort_direction=asc',  // Sport
+        '/billetter.html?affiliate=DKA&doc=category&fun=kategorieliste&detailadoc=erdetaila&detailbdoc=evdetailb&hkId=142&index=0&nextDays=30&nurbuchbar=true&showFilter=yes&sort_by=name&sort_direction=asc',  // Musical & Teater 
+        '/billetter.html?affiliate=DKA&doc=category&fun=kategorieliste&detailadoc=erdetaila&detailbdoc=evdetailb&hkId=164&index=0&nextDays=30&nurbuchbar=true&showFilter=yes&sort_by=name&sort_direction=asc',  // Familie
+        '/billetter.html?affiliate=DKA&doc=category&fun=kategorieliste&detailadoc=erdetaila&detailbdoc=evdetailb&hkId=165&index=0&nextDays=30&nurbuchbar=true&showFilter=yes&sort_by=name&sort_direction=asc',  // Comedy
+        '/billetter.html?affiliate=DKA&doc=category&fun=kategorieliste&detailadoc=erdetaila&detailbdoc=evdetailb&hkId=166&index=0&nextDays=30&nurbuchbar=true&showFilter=yes&sort_by=name&sort_direction=asc'   // Kultur
+        ];
+
+    let stringHTML = await request.getBilletlugenData(subURL);
     
     //console.log(stringHTML);    // Skal vente på at getBilletlugenData har kørt sådan at jeg kan tilgå en streng med alt HTML data. (Den venter ikke på getBilletlugenData)
 
     let eventList = [];
+        eventLinks = [];
 
     let falseEventSearch = '<h4>Spec', //let for searchs words
         newEventSearch = '<h4>',
@@ -30,7 +40,8 @@ const getData = async () => {
         dateEndSearch = '</div>',
         eventPriceSearch = 'class="price"',
         priceStartSearch = 'DKK',
-        priceEndSearch = ',';
+        priceEndSearch = ',',
+        extraString;
 
     let falseEventLength = falseEventSearch.length, //let for search words length
         linkStartLength = eventLinkSearch.length,
@@ -116,8 +127,13 @@ const getData = async () => {
     console.log(eventCounter);
 
     for(let j = 0; j < eventCounter; j++) {
-        eventList[j].link
+        extraString = '/';
+        eventLinks[j] = extraString.concat(eventList[j].link);
+        //console.log(eventLinks[j]);
     }
+
+    let descriptionHTML = await request.getBilletlugenData(eventLinks);
+    console.log(descriptionHTML[0]);
 };
 
 getData();
