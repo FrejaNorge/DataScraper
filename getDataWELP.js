@@ -36,7 +36,8 @@ const getData = async () => {
         venueEndSearch = '</dt>',
         locationStartSearch = '<span>',
         locationEndSearch = '</span>',
-        eventDateSearch = '<div>',
+        eventDateAndTimeSearch = '<div>',
+        dateMiddleSearch = '/',
         dateEndSearch = '</div>',
         eventPriceSearch = 'class="price"',
         priceStartSearch = 'DKK',
@@ -50,7 +51,7 @@ const getData = async () => {
         nameStartLength = eventNameSearch.length,
         venueStartLength = venueStartSearch.length,
         locationStartLength = locationStartSearch.length,
-        dateStartLength = eventDateSearch.length,
+        dateAndTimeStartLength = eventDateAndTimeSearch.length,
         imageStartLength = imageStartSearch.length,
         customLengthForName = 17;
 
@@ -65,7 +66,8 @@ const getData = async () => {
         venueEndIndex = 0,
         locationStartIndex = 0,
         locationEndIndex = 0,
-        dateStartIndex = 0,
+        dateAndTimeStartIndex = 0,
+        dateMiddleIndex,
         dateEndIndex = 0,
         priceIndex = 0,
         priceStartIndex = 0,
@@ -90,10 +92,8 @@ const getData = async () => {
                 //link
                 linkstartIndex = stringHTML[i].indexOf(eventLinkSearch, existingEventIndex) + linkStartLength;
                 linkEndIndex = stringHTML[i].indexOf(linkEndSearch, linkstartIndex + linkStartLength);
-                //console.log('link start:', linkstartIndex);
-                //console.log('link end:', linkEndIndex);
+
                 eventList[eventCounter].link = stringHTML[i].substr(linkstartIndex, linkEndIndex - linkstartIndex);
-                //console.log(eventCounter);
                 //console.log(eventList[eventCounter].link);
 
                 //name
@@ -101,32 +101,34 @@ const getData = async () => {
                 nameEndIndex = stringHTML[i].indexOf(nameEndSearch, nameStartIndex);
 
                 eventList[eventCounter].name = stringHTML[i].substr(nameStartIndex, nameEndIndex - (nameStartIndex + customLengthForName));
-                console.log(eventList[eventCounter].name);
+                //console.log(eventList[eventCounter].name);
 
                 //venue and location
                 venueAndLocationStartIndex = stringHTML[i].indexOf(eventvenueAndLocationSearch, nameEndIndex);
                 //venue
-                venueStartIndex = stringHTML[i].indexOf(venueStartSearch, nameEndIndex) + venueStartLength;
+                venueStartIndex = stringHTML[i].indexOf(venueStartSearch, venueAndLocationStartIndex) + venueStartLength;
                 venueEndIndex = stringHTML[i].indexOf(venueEndSearch, venueStartIndex);
 
                 eventList[eventCounter].venue = stringHTML[i].substr(venueStartIndex, venueEndIndex - venueStartIndex);
-                console.log(eventList[eventCounter].venue);
+                //console.log(eventList[eventCounter].venue);
 
                 //location
                 locationStartIndex = stringHTML[i].indexOf(locationStartSearch, venueEndIndex) + locationStartLength;
                 locationEndIndex = stringHTML[i].indexOf(locationEndSearch, locationStartIndex);
 
                 eventList[eventCounter].location = stringHTML[i].substr(locationStartIndex, locationEndIndex - locationStartIndex);
-                console.log(eventList[eventCounter].location);
+                //console.log(eventList[eventCounter].location);
 
-                //date
-                dateStartIndex = stringHTML[i].indexOf(eventDateSearch, locationEndIndex) + dateStartLength; //der skal tjekke op på start søge ord
-                dateEndIndex = stringHTML[i].indexOf(dateEndSearch, dateStartIndex);
+                //date and time
+                dateAndTimeStartIndex = stringHTML[i].indexOf(eventDateAndTimeSearch, locationEndIndex) + dateAndTimeStartLength;
+                dateMiddleIndex = stringHTML[i].indexOf(dateMiddleSearch, dateAndTimeStartIndex);
+                dateEndIndex = stringHTML[i].indexOf(dateEndSearch, dateMiddleIndex);
 
-                eventList[eventCounter].date = stringHTML[i].substr(dateStartIndex, dateEndIndex - dateStartIndex);
-                console.log(eventList[eventCounter].date);
+                eventList[eventCounter].date = stringHTML[i].substr(dateMiddleIndex - 9, 8);
+                eventList[eventCounter].time = stringHTML[i].substr(dateMiddleIndex + 2, 5);
+                //console.log(eventList[eventCounter].date);
+                //console.log(eventList[eventCounter].time);
 
-                //skal dele tid og dato
 
                 //price
                 priceIndex = stringHTML[i].indexOf(eventPriceSearch, dateEndIndex);
@@ -134,14 +136,14 @@ const getData = async () => {
                 priceEndIndex = stringHTML[i].indexOf(priceEndSearch, priceStartIndex) + 3;
 
                 eventList[eventCounter].price = stringHTML[i].substr(priceStartIndex, priceEndIndex - priceStartIndex);
-                console.log(eventList[eventCounter].price);
+                //console.log(eventList[eventCounter].price);
 
                 //image link
                 imageStartIndex = stringHTML[i].indexOf(imageStartSearch, priceEndIndex) + imageStartLength;
                 imageEndIndex = stringHTML[i].indexOf(imageEndSearch, imageStartIndex + imageStartLength);
 
                 eventList[eventCounter].imageLink = stringHTML[i].substr(imageStartIndex, imageEndIndex - imageStartIndex);
-                console.log(eventList[eventCounter].imageLink);
+                //console.log(eventList[eventCounter].imageLink);
 
                 //end properties
                 lastEventIndex = priceEndIndex;
@@ -159,7 +161,7 @@ const getData = async () => {
         eventLinks[i] = extraString.concat(eventList[i].link);
 
         eventLinks[i] = eventLinks[i].replace(/;/g, '&');
-        console.log(eventLinks[i]);
+        //console.log(eventLinks[i]);
     }
 /*
     let descriptionHTML = await request.getBilletlugenData(eventLinks);
