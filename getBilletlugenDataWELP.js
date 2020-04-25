@@ -6,7 +6,7 @@
 */ 
 
 const request = require('./WebRequest.js');       // Loads the module WebRequest.js
-const billetlugenHeader = require('./headers.js');  
+const header = require('./headers.js');  
 const fs = require('fs');
 
 
@@ -27,7 +27,7 @@ function getBilletlugenData(subURL) {
         for (index = 0; index < subURL.length; index++) {
             try {
                 
-                result = await request.WebRequestSecure(billetlugenHeader, 'www.billetlugen.dk', subURL[index]);
+                result = await request.WebRequestSecure(header.billetlugenHeader, 'www.billetlugen.dk', subURL[index]);
                 console.log(result.statuscode);
                 if(result.statuscode === 200){
                     data.push(result.data);
