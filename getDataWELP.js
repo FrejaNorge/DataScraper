@@ -50,10 +50,9 @@ const getData = async () => {
         nameStartLength = eventNameSearch.length,
         venueStartLength = venueStartSearch.length,
         locationStartLength = locationStartSearch.length,
-        eventDateLength = eventDateSearch.length,
-        priceStartLength = priceStartSearch.length,
-        priceCustomLenght = 3,
-        imageStartLength = imageStartSearch.length;
+        dateStartLength = eventDateSearch.length,
+        imageStartLength = imageStartSearch.length,
+        customLengthForName = 17;
 
     let existingEventIndex = 0, //let for index venues
         lastEventIndex = 0,
@@ -98,43 +97,51 @@ const getData = async () => {
                 //console.log(eventList[eventCounter].link);
 
                 //name
-                nameStartIndex = stringHTML[i].indexOf(eventNameSearch, linkEndIndex);
+                nameStartIndex = stringHTML[i].indexOf(eventNameSearch, linkEndIndex) + nameStartLength;
                 nameEndIndex = stringHTML[i].indexOf(nameEndSearch, nameStartIndex);
 
-                eventList[eventCounter].name = stringHTML[i].substr();
+                eventList[eventCounter].name = stringHTML[i].substr(nameStartIndex, nameEndIndex - (nameStartIndex + customLengthForName));
+                console.log(eventList[eventCounter].name);
 
                 //venue and location
                 venueAndLocationStartIndex = stringHTML[i].indexOf(eventvenueAndLocationSearch, nameEndIndex);
                 //venue
-                venueStartIndex = stringHTML[i].indexOf(venueStartSearch, nameEndIndex);
+                venueStartIndex = stringHTML[i].indexOf(venueStartSearch, nameEndIndex) + venueStartLength;
                 venueEndIndex = stringHTML[i].indexOf(venueEndSearch, venueStartIndex);
 
-                eventList[eventCounter].venue = stringHTML[i].substr();
+                eventList[eventCounter].venue = stringHTML[i].substr(venueStartIndex, venueEndIndex - venueStartIndex);
+                console.log(eventList[eventCounter].venue);
 
                 //location
-                locationStartIndex = stringHTML[i].indexOf(locationStartSearch, venueEndIndex);
+                locationStartIndex = stringHTML[i].indexOf(locationStartSearch, venueEndIndex) + locationStartLength;
                 locationEndIndex = stringHTML[i].indexOf(locationEndSearch, locationStartIndex);
 
-                eventList[eventCounter].location = stringHTML[i].substr();
+                eventList[eventCounter].location = stringHTML[i].substr(locationStartIndex, locationEndIndex - locationStartIndex);
+                console.log(eventList[eventCounter].location);
 
                 //date
-                dateStartIndex = stringHTML[i].indexOf(eventDateSearch, locationEndIndex);
+                dateStartIndex = stringHTML[i].indexOf(eventDateSearch, locationEndIndex) + dateStartLength; //der skal tjekke op på start søge ord
                 dateEndIndex = stringHTML[i].indexOf(dateEndSearch, dateStartIndex);
 
-                eventList[eventCounter].date = stringHTML[i].substr();
+                eventList[eventCounter].date = stringHTML[i].substr(dateStartIndex, dateEndIndex - dateStartIndex);
+                console.log(eventList[eventCounter].date);
+
+                //skal dele tid og dato
 
                 //price
                 priceIndex = stringHTML[i].indexOf(eventPriceSearch, dateEndIndex);
-                priceStartIndex = stringHTML[i].indexOf(priceStartSearch, priceIndex);
-                priceEndIndex = stringHTML[i].indexOf(priceEndSearch, priceStartIndex);
+                priceStartIndex = stringHTML[i].indexOf(priceStartSearch, priceIndex) + 4;
+                priceEndIndex = stringHTML[i].indexOf(priceEndSearch, priceStartIndex) + 3;
 
-                eventList[eventCounter].price = stringHTML[i].substr();
+                eventList[eventCounter].price = stringHTML[i].substr(priceStartIndex, priceEndIndex - priceStartIndex);
+                console.log(eventList[eventCounter].price);
 
                 //image link
-                imageStartIndex = stringHTML[i].indexOf(imageStartSearch, priceEndIndex);
+                imageStartIndex = stringHTML[i].indexOf(imageStartSearch, priceEndIndex) + imageStartLength;
                 imageEndIndex = stringHTML[i].indexOf(imageEndSearch, imageStartIndex + imageStartLength);
 
-                eventList[eventCounter].imageLink = stringHTML[i].substr();
+                eventList[eventCounter].imageLink = stringHTML[i].substr(imageStartIndex, imageEndIndex - imageStartIndex);
+                console.log(eventList[eventCounter].imageLink);
 
                 //end properties
                 lastEventIndex = priceEndIndex;
