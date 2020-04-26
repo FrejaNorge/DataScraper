@@ -169,7 +169,7 @@ const getData = async () => {
     let descriptionHTML = await request.getBilletlugenData(eventLinks);
     //console.log(descriptionHTML[0]);
 
-   let descriptionStartSearch = '}  }">',
+    let descriptionStartSearch = '}  }">',
         descriptionEndSearch = '</div>';
 
 
@@ -183,13 +183,15 @@ const getData = async () => {
 
         if(descriptionHTML[i] !== undefined) {
 
-           // eventList[eventCounter] = new eventInfo();
+            //eventList[i] = new eventInfo();
 
             descriptionStartIndex = descriptionHTML[i].indexOf(descriptionStartSearch) + descriptionStartlength;
             descriptionEndIndex = descriptionHTML[i].indexOf(descriptionEndSearch, descriptionStartIndex);
+            
 
-            eventList[eventCounter].description = descriptionHTML[i].substr(descriptionStartIndex, descriptionEndIndex - descriptionStartIndex);
-            console.log(eventList[eventCounter].description);
+            eventList[i].description = descriptionHTML[i].substr(descriptionStartIndex, descriptionEndIndex - descriptionStartIndex);
+            //console.log(eventList[i].description);
+            console.log(eventList[i].name);
             //lav noget kode som kan finde beskrivelsen :)
         }
     }
