@@ -44,7 +44,7 @@ const getData = async () => {
         priceEndSearch = ',',
         imageStartSearch = '<img src="/',
         imageEndSearch = '"',
-        extraString;
+        extraString = '/';
 
     let falseEventLength = falseEventSearch.length, //let for search words length
         linkStartLength = eventLinkSearch.length,
@@ -129,7 +129,6 @@ const getData = async () => {
                 //console.log(eventList[eventCounter].date);
                 //console.log(eventList[eventCounter].time);
 
-
                 //price
                 priceIndex = stringHTML[i].indexOf(eventPriceSearch, dateEndIndex);
                 priceStartIndex = stringHTML[i].indexOf(priceStartSearch, priceIndex) + 4;
@@ -155,11 +154,9 @@ const getData = async () => {
             lastEventIndex = 0;
         }
     }
-
-    console.log(eventCounter);
+    //console.log(eventCounter);
 
     for(i = 0; i < eventCounter; i++) {
-        extraString = '/';
         eventLinks[i] = extraString.concat(eventList[i].link);
 
         eventLinks[i] = eventLinks[i].replace(/;/g, '&');
@@ -168,34 +165,32 @@ const getData = async () => {
 
     let descriptionHTML = await request.getBilletlugenData(eventLinks);
     //console.log(descriptionHTML[0]);
+    //console.log(eventLinks[0]);
 
-    let descriptionStartSearch = '}  }">',
-        descriptionEndSearch = '</div>';
-
+    let eventDescriptionSearch = 'og:description',
+        descriptionStartSearch = 'content="',
+        descriptionEndSearch = '" />';
 
     let descriptionStartlength = descriptionStartSearch.length;
 
-    let descriptionStartIndex = 0,
+    let eventDescriptionIndex = 0,
+        descriptionStartIndex = 0,
         descriptionEndIndex = 0;
-
 
     for(i = 0; i < eventCounter; i++) {
 
         if(descriptionHTML[i] !== undefined) {
 
-            //eventList[i] = new eventInfo();
-
-            descriptionStartIndex = descriptionHTML[i].indexOf(descriptionStartSearch) + descriptionStartlength;
+            eventDescriptionIndex = descriptionHTML[i].indexOf(eventDescriptionSearch);
+            descriptionStartIndex = descriptionHTML[i].indexOf(descriptionStartSearch, eventDescriptionIndex) + descriptionStartlength;
             descriptionEndIndex = descriptionHTML[i].indexOf(descriptionEndSearch, descriptionStartIndex);
-            
 
             eventList[i].description = descriptionHTML[i].substr(descriptionStartIndex, descriptionEndIndex - descriptionStartIndex);
+            //console.log(eventLinks[i]);
             //console.log(eventList[i].description);
-            console.log(eventList[i].name);
-            //lav noget kode som kan finde beskrivelsen :)
+            //console.log(i);
         }
     }
-
 };
 
 getData();
