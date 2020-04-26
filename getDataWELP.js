@@ -148,6 +148,8 @@ const getData = async () => {
                 //end properties
                 lastEventIndex = priceEndIndex;
                 existingEventIndex = stringHTML[i].indexOf(newEventSearch, lastEventIndex);
+                
+                eventList[eventCounter].description = '';
                 eventCounter++;
             }
             lastEventIndex = 0;
@@ -163,26 +165,35 @@ const getData = async () => {
         eventLinks[i] = eventLinks[i].replace(/;/g, '&');
         //console.log(eventLinks[i]);
     }
-/*
+
     let descriptionHTML = await request.getBilletlugenData(eventLinks);
     //console.log(descriptionHTML[0]);
 
-    let descriptionStartSearch = '',
-        descriptionEndSearch = '';
+   let descriptionStartSearch = '}  }">',
+        descriptionEndSearch = '</div>';
+
 
     let descriptionStartlength = descriptionStartSearch.length;
 
     let descriptionStartIndex = 0,
         descriptionEndIndex = 0;
 
+
     for(i = 0; i < eventCounter; i++) {
 
         if(descriptionHTML[i] !== undefined) {
 
+           // eventList[eventCounter] = new eventInfo();
+
+            descriptionStartIndex = descriptionHTML[i].indexOf(descriptionStartSearch) + descriptionStartlength;
+            descriptionEndIndex = descriptionHTML[i].indexOf(descriptionEndSearch, descriptionStartIndex);
+
+            eventList[eventCounter].description = descriptionHTML[i].substr(descriptionStartIndex, descriptionEndIndex - descriptionStartIndex);
+            console.log(eventList[eventCounter].description);
             //lav noget kode som kan finde beskrivelsen :)
         }
     }
-*/
+
 };
 
 getData();
