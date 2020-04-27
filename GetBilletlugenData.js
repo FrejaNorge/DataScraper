@@ -1,165 +1,196 @@
 /*
-    GetBilletlugenData()
-    takes the subURL to all categoris from 
-    from www.billetlugen.dk for the next 30 days
-    collects the raw HTML data with a 2000ms delay
-*/ 
+    getBilletlugenData()
+*/
 
-async function getBilletlugenData() {
+const request = require('./getData.js');
+const eventInfo = require('./eventPrototype.js');
+const header = require('./headers.js');
 
-    const request = require('./WebRequest.js');       // Loads the module WebRequest.js
-    const billetlugenHeader = require('./headers.js');  
-    const fs = require('fs');
+const getBilletlugenData = async () => {
 
-    let index = 0,
-        subURL = [
+    let subURL = [
         '/billetter.html?affiliate=DKA&doc=category&fun=kategorieliste&detailadoc=erdetaila&detailbdoc=evdetailb&hkId=140&index=0&nextDays=30&nurbuchbar=true&showFilter=yes&sort_by=name&sort_direction=asc',  // Musik
         '/billetter.html?affiliate=DKA&doc=category&fun=kategorieliste&detailadoc=erdetaila&detailbdoc=evdetailb&hkId=141&index=0&nextDays=30&nurbuchbar=true&showFilter=yes&sort_by=name&sort_direction=asc',  // Sport
         '/billetter.html?affiliate=DKA&doc=category&fun=kategorieliste&detailadoc=erdetaila&detailbdoc=evdetailb&hkId=142&index=0&nextDays=30&nurbuchbar=true&showFilter=yes&sort_by=name&sort_direction=asc',  // Musical & Teater 
         '/billetter.html?affiliate=DKA&doc=category&fun=kategorieliste&detailadoc=erdetaila&detailbdoc=evdetailb&hkId=164&index=0&nextDays=30&nurbuchbar=true&showFilter=yes&sort_by=name&sort_direction=asc',  // Familie
         '/billetter.html?affiliate=DKA&doc=category&fun=kategorieliste&detailadoc=erdetaila&detailbdoc=evdetailb&hkId=165&index=0&nextDays=30&nurbuchbar=true&showFilter=yes&sort_by=name&sort_direction=asc',  // Comedy
         '/billetter.html?affiliate=DKA&doc=category&fun=kategorieliste&detailadoc=erdetaila&detailbdoc=evdetailb&hkId=166&index=0&nextDays=30&nurbuchbar=true&showFilter=yes&sort_by=name&sort_direction=asc'   // Kultur
-    ];
-    fs.writeFile("event.json", '', 'utf8', function(err) {});
+        ];
 
-    for (index = 0; index <= subURL.length; index++) {
+    let stringHTML = await request.getData(subURL);
+    
+    //console.log(stringHTML);    // Skal vente på at getBilletlugenData har kørt sådan at jeg kan tilgå en streng med alt HTML data. (Den venter ikke på getBilletlugenData)
 
-        (function(index) {
+    let eventList = [];
+        eventLinks = [];
 
-            setTimeout(async function() {
-                try {
-                    result = await request.WebRequestSecure(billetlugenHeader, 'www.billetlugen.dk', subURL[index]);
-                    
-                    fs.appendFile("event.json", result.data, 'utf8', function(err) {
-                    });
-                    //console.log(result.data); // Debug
-                } catch(err) {
-                    console.log(err);
-                }
+    let falseEventSearch = '<h4>Spec', //let for searchs words
+        newEventSearch = '<h4>',
+        eventLinkSearch = '<a href="',
+        linkEndSearch = '"',
+        eventNameSearch = 'title="',
+        nameEndSearch = 'name="',
+        eventvenueAndLocationSearch = 'class="place"',
+        venueStartSearch = '<dt>',
+        venueEndSearch = '</dt>',
+        locationStartSearch = '<span>',
+        locationEndSearch = '</span>',
+        eventDateAndTimeSearch = '<div>',
+        dateMiddleSearch = '/',
+        dateEndSearch = '</div>',
+        eventPriceSearch = 'class="price"',
+        priceStartSearch = 'DKK',
+        priceEndSearch = ',',
+        imageStartSearch = '<img src="/',
+        imageEndSearch = '"',
+        extraString = '/';
 
-            }, 2000 * index);
-            
-        })(index);
-    }
-}; 
+    let falseEventLength = falseEventSearch.length, //let for search words length
+        linkStartLength = eventLinkSearch.length,
+        nameStartLength = eventNameSearch.length,
+        venueStartLength = venueStartSearch.length,
+        locationStartLength = locationStartSearch.length,
+        dateAndTimeStartLength = eventDateAndTimeSearch.length,
+        imageStartLength = imageStartSearch.length,
+        customLengthForName = 17;
 
-getBilletlugenData();    // Debug
+    let existingEventIndex = 0, //let for index venues
+        lastEventIndex = 0,
+        linkstartIndex = 0,
+        linkEndIndex = 0,
+        nameStartIndex = 0,
+        nameEndIndex = 0,
+        venueAndLocationStartIndex = 0,
+        venueStartIndex = 0,
+        venueEndIndex = 0,
+        locationStartIndex = 0,
+        locationEndIndex = 0,
+        dateAndTimeStartIndex = 0,
+        dateMiddleIndex,
+        dateEndIndex = 0,
+        priceIndex = 0,
+        priceStartIndex = 0,
+        priceEndIndex = 0,
+        imageStartIndex = 0,
+        imageEndIndex = 0,
+        eventCounter = 0;
 
-module.exports = getBilletlugenData;
+    //console.log(stringHTML);
 
+    for(let i = 0; i < stringHTML.length; i++) {
 
-/*
-let footerSearch = '<ul class="footerPager"',
-    nextDisabledSearch = '<li class="next arrowdisabled">',
-    nextSearch = '<li class="next">',
-    nextHrefSearch = '<a href="',
-    endNextHrefSearch = '"',
-    startLinkString = '/billetter.html',    
-    link = '',
-    result = '',
-    accualLink = '';
+        if(stringHTML[i] !== undefined) {
+            skipindex = stringHTML[i].indexOf(falseEventSearch, lastEventIndex) + falseEventLength;
+        
+            existingEventIndex = stringHTML[i].indexOf(newEventSearch, skipindex);
+            lastEventIndex = existingEventIndex;
+            //console.log('eventTest', existingEventIndex);
 
-let indexPoint = 0,
-    indexPointNext = 0,
-    indexPointStart = 0,
-    indexPointEnd = 0,
-    startIndexLink = 0,
-    linkLenght = 0,
-    counter = 0;
-    */
+            while ((existingEventIndex !== -1) && (lastEventIndex !== -1)) {
+                eventList[eventCounter] = new eventInfo();
+                //link
+                linkstartIndex = stringHTML[i].indexOf(eventLinkSearch, existingEventIndex) + linkStartLength;
+                linkEndIndex = stringHTML[i].indexOf(linkEndSearch, linkstartIndex + linkStartLength);
 
+                eventList[eventCounter].link = stringHTML[i].substr(linkstartIndex, linkEndIndex - linkstartIndex);
+                //console.log(eventList[eventCounter].link);
 
+                //name
+                nameStartIndex = stringHTML[i].indexOf(eventNameSearch, linkEndIndex) + nameStartLength;
+                nameEndIndex = stringHTML[i].indexOf(nameEndSearch, nameStartIndex);
 
+                eventList[eventCounter].name = stringHTML[i].substr(nameStartIndex, nameEndIndex - (nameStartIndex + customLengthForName));
+                //console.log(eventList[eventCounter].name);
 
+                //venue and location
+                venueAndLocationStartIndex = stringHTML[i].indexOf(eventvenueAndLocationSearch, nameEndIndex);
+                //venue
+                venueStartIndex = stringHTML[i].indexOf(venueStartSearch, venueAndLocationStartIndex) + venueStartLength;
+                venueEndIndex = stringHTML[i].indexOf(venueEndSearch, venueStartIndex);
 
-/*
+                eventList[eventCounter].venue = stringHTML[i].substr(venueStartIndex, venueEndIndex - venueStartIndex);
+                //console.log(eventList[eventCounter].venue);
 
+                //location
+                locationStartIndex = stringHTML[i].indexOf(locationStartSearch, venueEndIndex) + locationStartLength;
+                locationEndIndex = stringHTML[i].indexOf(locationEndSearch, locationStartIndex);
 
-do {    
+                eventList[eventCounter].location = stringHTML[i].substr(locationStartIndex, locationEndIndex - locationStartIndex);
+                //console.log(eventList[eventCounter].location);
 
-    indexPoint = result.indexOf(footerSearch);
-    if (indexPoint !== -1) {
+                //date and time
+                dateAndTimeStartIndex = stringHTML[i].indexOf(eventDateAndTimeSearch, locationEndIndex) + dateAndTimeStartLength;
+                dateMiddleIndex = stringHTML[i].indexOf(dateMiddleSearch, dateAndTimeStartIndex);
+                dateEndIndex = stringHTML[i].indexOf(dateEndSearch, dateMiddleIndex);
 
-        indexPointDisabled = result.indexOf(nextDisabledSearch)
-        if (indexPointDisabled === -1) {
+                eventList[eventCounter].date = stringHTML[i].substr(dateMiddleIndex - 9, 8);
+                eventList[eventCounter].time = stringHTML[i].substr(dateMiddleIndex + 2, 5);
+                //console.log(eventList[eventCounter].date);
+                //console.log(eventList[eventCounter].time);
 
-            indexPointNext = result.indexOf(nextSearch, indexPoint);
-            indexPointStart = result.indexOf(nextHrefSearch, indexPointNext);
-            indexPointEnd = result.indexOf(endNextHrefSearch, indexPointStart + nextHrefSearch.lenght);
+                //price
+                priceIndex = stringHTML[i].indexOf(eventPriceSearch, dateEndIndex);
+                priceStartIndex = stringHTML[i].indexOf(priceStartSearch, priceIndex) + 4;
+                priceEndIndex = stringHTML[i].indexOf(priceEndSearch, priceStartIndex) + 3;
 
-            startIndexLink = indexPointStart + nextHrefSearch.lenght;
-            linkLenght = indexPointEnd - startIndexLink;
-            link = result.substr(startIndexLink, linkLenght);
+                eventList[eventCounter].price = stringHTML[i].substr(priceStartIndex, priceEndIndex - priceStartIndex);
+                //console.log(eventList[eventCounter].price);
 
-            counter++;
+                //image link
+                imageStartIndex = stringHTML[i].indexOf(imageStartSearch, priceEndIndex) + imageStartLength;
+                imageEndIndex = stringHTML[i].indexOf(imageEndSearch, imageStartIndex + imageStartLength);
+
+                eventList[eventCounter].imageLink = stringHTML[i].substr(imageStartIndex, imageEndIndex - imageStartIndex);
+                //console.log(eventList[eventCounter].imageLink);
+
+                //end properties
+                lastEventIndex = priceEndIndex;
+                existingEventIndex = stringHTML[i].indexOf(newEventSearch, lastEventIndex);
+                
+                eventList[eventCounter].description = '';
+                eventCounter++;
+            }
+            lastEventIndex = 0;
         }
     }
-}
-    accualLink.concat(startLinkString, link);
 
-    setTimeout(async function() {
-        try {
-            result = await request.WebRequestSecure(billetlugenHeader, 'www.billetlugen.dk', accualLink);
+    //console.log(eventCounter);
 
-            //console.log(result);
-        } catch(err) {
-            console.log(err);
+    for(i = 0; i < eventCounter; i++) {
+        eventLinks[i] = extraString.concat(eventList[i].link);
+
+        eventLinks[i] = eventLinks[i].replace(/;/g, '&');
+        //console.log(eventLinks[i]);
+    }
+
+    let descriptionHTML = await request.getData(eventLinks);
+    //console.log(descriptionHTML[0]);
+    //console.log(eventLinks[0]);
+
+    let eventDescriptionSearch = 'og:description',
+        descriptionStartSearch = 'content="',
+        descriptionEndSearch = '" />';
+
+    let descriptionStartlength = descriptionStartSearch.length;
+
+    let eventDescriptionIndex = 0,
+        descriptionStartIndex = 0,
+        descriptionEndIndex = 0;
+
+    for(i = 0; i < eventCounter; i++) {
+
+        if(descriptionHTML[i] !== undefined) {
+
+            eventDescriptionIndex = descriptionHTML[i].indexOf(eventDescriptionSearch);
+            descriptionStartIndex = descriptionHTML[i].indexOf(descriptionStartSearch, eventDescriptionIndex) + descriptionStartlength;
+            descriptionEndIndex = descriptionHTML[i].indexOf(descriptionEndSearch, descriptionStartIndex);
+
+            eventList[i].description = descriptionHTML[i].substr(descriptionStartIndex, descriptionEndIndex - descriptionStartIndex);
+            //console.log(eventLinks[i]);
+            //console.log(eventList[i].description);
+            //console.log(i);
         }
+    }
+};
 
-
-while ((indexPoint !== -1) && (indexPointDisabled !== -1));
-
-let eventInfo = {"link": '', "name": '', "location": '', "place": '', "date": '', "time": '', "price": ''},
-    eventList = [];
-
-let newEventSearch = '<h4>', //let for searchs words
-    eventLinkSearch = '<a href="',
-    linkEndSearch = '" title=',
-    eventNameSearch = 'title="',
-    nameEndSearch = 'name="',
-    eventLocationSearch = 'class="place"',
-    placeStartSearch = '<dt>',
-    placeEndSearch = '</dt>',
-    locationStartSearch = '<span>',
-    locationEndSearch = '</span>',
-    eventDateSearch = '<div>',
-    timeEndSearch = '</div>',
-    eventPriceSearch = 'class="price"',
-    priceStartSearch = 'DKK',
-    priceEndSearch = ',';
-
-let stfu = 'stfu'; //let for lenghts
-
-let existingEventIndex = 0, //let for index places
-    lastEventIndex = 0,
-    linkstartIndex = 0,
-    linkEndIndex = 0,
-    nameStartIndex = 0,
-    nameEndIndex = 0,
-    placeStartIndex = 0,
-    placeEndIndex = 0,
-    locationStartIndex = 0,
-    locationEndIndex = 0,
-    dateStartIndex = 0,
-    dateEndIndex = 0,
-    priceStartIndex = 0,
-    priceEndIndex = 0;
-
-
-existingEventIndex = result.indexOf(newEventSearch, lastEventIndex);
-console.log(existingEventIndex);
-console.log(result);
-
-while (existingEventIndex !== -1) {
-
-    linkstartIndex = result.indexOf(eventLinkSearch, existingEventIndex);
-    linkEndIndex = result.indexOf(linkEndSearch, linkstartIndex);
-
-    eventInfo.link = result.substr((linkstartIndex + eventLinkSearch.lenght), (linkEndIndex - (linkstartIndex - eventLinkSearch.lenght)));
-    console.log(linkstartIndex);
-    console.log(linkEndIndex);
-    console.log(eventInfo.link);
-
-}
-
-*/
+getBilletlugenData();
