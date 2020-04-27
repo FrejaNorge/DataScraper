@@ -192,5 +192,6 @@ const getBilletlugenData = async () => {
         }
     }
 };
-
-getBilletlugenData();
+module.exports = { 
+    getBilletlugenData, 
+}
