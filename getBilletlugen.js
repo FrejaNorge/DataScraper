@@ -1,12 +1,15 @@
 /*
-    getBilletlugenData()
-*/
+    getBilletlugen()
+    takes the subURL to all categoris from 
+    from www.billetlugen.dk for the next 30 days
+    collecting the correct data and saves it as an object
+*/ 
 
 const request = require('./getData.js');
 const eventInfo = require('./eventPrototype.js');
 const header = require('./headers.js');
 
-const getBilletlugenData = async () => {
+const getBilletlugen = async () => {
 
     let subURL = [
         '/billetter.html?affiliate=DKA&doc=category&fun=kategorieliste&detailadoc=erdetaila&detailbdoc=evdetailb&hkId=140&index=0&nextDays=30&nurbuchbar=true&showFilter=yes&sort_by=name&sort_direction=asc',  // Musik
@@ -193,5 +196,5 @@ const getBilletlugenData = async () => {
     }
 };
 module.exports = { 
-    getBilletlugenData, 
+    getBilletlugen,
 }

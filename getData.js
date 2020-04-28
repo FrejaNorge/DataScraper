@@ -1,8 +1,8 @@
 /*
-    GetBilletlugenData()
-    takes the subURL to all categoris from 
-    from www.billetlugen.dk for the next 30 days
-    collects the raw HTML data with a 2000ms delay
+    getData()
+    Calls webRequest() to get data from the given host
+    and sub URLs. Then delay the requests 
+    and push the HTML data to an array of strings and returns a promise
 */ 
 
 const request = require('./WebRequest.js');       // Loads the module WebRequest.js
@@ -20,11 +20,11 @@ function getData(subURL) {
                 
                 result = await request.webRequest(header.billetlugenHeader, 'www.billetlugen.dk', subURL[index]);
                 console.log(result.statuscode);
-                if(result.statuscode === 200){
+                if(result.statuscode === 200) {
                     data.push(result.data);
                 }
 
-                if(index + 1 !== subURL.length){ //skip last wait
+                if(index + 1 !== subURL.length) { //skip last wait
                     await delay(2000);
                     //console.log("waited");
                 }

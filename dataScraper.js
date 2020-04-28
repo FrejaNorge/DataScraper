@@ -2,6 +2,6 @@
   dataScraper()
 */
 
-const scraper = require('./getBilletlugenData.js');
+const scraper = require('./getBilletlugen.js');
 
-scraper.getBilletlugenData();
+scraper.getBilletlugen();
