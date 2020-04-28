@@ -3,7 +3,7 @@
 */
 
 function EventInfo(link, name, location, venue, date, time, price, description, imageLink) {
-  
+
     this.link = link;
     this.name = name;
     this.location = location;

@@ -8,7 +8,7 @@
 const request = require('./WebRequest.js');       // Loads the module WebRequest.js
 const header = require('./headers.js');  
 
-function getData(subURL) {
+function getData(header,hostName,subURL) {
 
     let index = 0;
        
@@ -18,7 +18,7 @@ function getData(subURL) {
         for (index = 0; index < subURL.length; index++) {
             try {
                 
-                result = await request.webRequest(header.billetlugenHeader, 'www.billetlugen.dk', subURL[index]);
+                result = await request.webRequest(header, hostName, subURL[index]);
                 console.log(result.statuscode);
                 if(result.statuscode === 200) {
                     data.push(result.data);

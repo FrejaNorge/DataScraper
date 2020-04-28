@@ -6,11 +6,11 @@
 */ 
 
 const request = require('./getData.js');
-const eventInfo = require('./eventPrototype.js');
+const eventInfo = require('./eventInfo.js');
 const header = require('./headers.js');
 
 const getBilletlugen = async () => {
-
+    let hostName = 'www.billetlugen.dk'
     let subURL = [
         '/billetter.html?affiliate=DKA&doc=category&fun=kategorieliste&detailadoc=erdetaila&detailbdoc=evdetailb&hkId=140&index=0&nextDays=30&nurbuchbar=true&showFilter=yes&sort_by=name&sort_direction=asc',  // Musik
         '/billetter.html?affiliate=DKA&doc=category&fun=kategorieliste&detailadoc=erdetaila&detailbdoc=evdetailb&hkId=141&index=0&nextDays=30&nurbuchbar=true&showFilter=yes&sort_by=name&sort_direction=asc',  // Sport
@@ -20,7 +20,7 @@ const getBilletlugen = async () => {
         '/billetter.html?affiliate=DKA&doc=category&fun=kategorieliste&detailadoc=erdetaila&detailbdoc=evdetailb&hkId=166&index=0&nextDays=30&nurbuchbar=true&showFilter=yes&sort_by=name&sort_direction=asc'   // Kultur
         ];
 
-    let stringHTML = await request.getData(subURL);
+    let stringHTML = await request.getData(header.billetlugenHeader, hostName ,subURL);
     
     //console.log(stringHTML);    // Skal vente på at getBilletlugenData har kørt sådan at jeg kan tilgå en streng med alt HTML data. (Den venter ikke på getBilletlugenData)
 
@@ -166,7 +166,7 @@ const getBilletlugen = async () => {
         //console.log(eventLinks[i]);
     }
 
-    let descriptionHTML = await request.getData(eventLinks);
+    let descriptionHTML = await request.getData(header.billetlugenHeader,hostName,eventLinks);
     //console.log(descriptionHTML[0]);
     //console.log(eventLinks[0]);
 

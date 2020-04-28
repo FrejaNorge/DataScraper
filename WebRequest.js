@@ -15,7 +15,7 @@ function webRequest(header, hostName, path) {
     };
 
     let p = new Promise((resolve, reject) => {
-    
+
         let req = https.request(options, function(res) {
             let data = "";
             res.setEncoding("utf8");
@@ -26,7 +26,7 @@ function webRequest(header, hostName, path) {
 
             res.on("end", ()=> {
                 resolve({ statuscode: res.statusCode, data: data});
-            });  
+            });
 
             res.on('error', (err) => {
                 reject({statuscode: res.statusCode, data: err});
@@ -38,6 +38,6 @@ function webRequest(header, hostName, path) {
     return p;
 }
 
-module.exports = { 
+module.exports = {
     webRequest, 
 }
